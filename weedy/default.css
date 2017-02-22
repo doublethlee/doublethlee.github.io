@@ -31,7 +31,7 @@ h1, h2, h3
 h2
 {
 	text-transform: uppercase;
-	font-family: 'Fjalla One', sans-serif;
+	font-family: 'Microsoft YaHei', sans-serif;
 	color: #860659;
 }
 
@@ -165,7 +165,7 @@ hr
 {
 	text-decoration: none;
 	text-transform: uppercase;
-	font-family: 'Fjalla One', sans-serif;
+	font-family: 'Microsoft YaHei', sans-serif;
 	font-size: 1.50em;
 	color: #FFFFFF;
 }
@@ -188,6 +188,7 @@ hr
 {
 	position: absolute;
 	right: 10px;
+	left: 10px;
 	width: 725px;
 	padding: 10px 10px 40px 10px;
 	background: #FFDA99;
