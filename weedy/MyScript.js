@@ -2,7 +2,124 @@
 function Login(){
 	if($("#pwd").val()=='chicken8')
 	{
+		$("#box2").fadeOut();
+		$("#box3").show();
 		
+		firebase.database().ref('小雞婚禮問卷資訊').on('value', function(snapshot) {
+			$("#qno").html(snapshot.numChildren());
+			
+			$("#result").html('');
+			snapshot.forEach(function(childSnapshot) {
+				var HTML = "";
+				
+				var Q1 = '不要喜帖';
+				if(childSnapshot.val().要收喜帖)
+				{
+					Q1 = childSnapshot.val().地址;
+				}
+				
+				var Q2 = '不出席';
+				
+				if(childSnapshot.val().出席)
+				{
+					Q2 = childSnapshot.val().出席人數;
+				}
+				
+				var Q3 = '';
+				
+				if(childSnapshot.val().關係.charAt(0)=='1')
+				{
+					Q3 += '男方的親戚<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(1)=='1')
+				{
+					Q3 += '男方的朋友（含同學）<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(2)=='1')
+				{
+					Q3 += '男方的教會朋友<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(3)=='1')
+				{
+					Q3 += '女方的親戚<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(4)=='1')
+				{
+					Q3 += '女方的朋友（含同學）<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(5)=='1')
+				{
+					Q3 += '男方的親戚<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(6)=='1')
+				{
+					Q3 += '女方同事<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(7)=='1')
+				{
+					Q3 += '女方的教會朋友<br>';
+				}
+				
+				if(childSnapshot.val().關係.charAt(8)=='1')
+				{
+					Q3 += '其他：'+childSnapshot.val().其它+'<br>';
+				}
+				
+				
+
+
+
+
+
+
+				
+				
+					HTML +='<center><table class="contacts" cellspacing="0" summary="Contacts template">';
+					HTML +='<tr>';
+					HTML +='<td class="contactDept" colspan="3">'+childSnapshot.val().姓名+'</td>';
+					HTML +='</tr>';
+					HTML +='<tr>';
+					HTML +='<td class="contact" width="25%">喜帖地址：</td>';
+					HTML +='<td class="contact" width="60%">'+Q1+'</td>';
+					HTML +='<td class="contact"></td>';
+					HTML +='</tr>';
+					
+					HTML +='<tr>';
+					HTML +='<td class="contact" width="25%">出席人數：</td>';
+					HTML +='<td class="contact" width="60%">'+Q2+'</td>';
+					HTML +='<td class="contact"></td>';
+					HTML +='</tr>';
+					
+					HTML +='<tr>';
+					HTML +='<td class="contact" width="25%">素食餐點：</td>';
+					HTML +='<td class="contact" width="60%">'+childSnapshot.val().素食+'</td>';
+					HTML +='<td class="contact"></td>';
+					HTML +='</tr>';
+					
+					HTML +='<tr>';
+					HTML +='<td class="contact" width="25%">關係：</td>';
+					HTML +='<td class="contact" width="60%">'+Q3+'</td>';
+					HTML +='<td class="contact"></td>';
+					HTML +='</tr>';
+					
+					HTML +='<tr>';
+					HTML +='<td class="contact" width="25%">填表時間：</td>';
+					HTML +='<td class="contact" width="60%">'+formatDate(new Date(childSnapshot.val().時間))+'</td>';
+					HTML +='<td class="contact"></td>';
+					HTML +='</tr>';
+					
+					HTML +='</table></center><br>';
+				
+				$("#result").append(HTML);
+			});
+		});
 	}
 	else	
 	{
@@ -10,7 +127,26 @@ function Login(){
 	}
 }
 	
+function formatDate(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? '下午' : '早上';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  hours = hours < 10 ? '0'+hours : hours;
+  var strTime = ampm + hours + ':' + minutes + ' ';
+  return padLeft(date.getMonth()+1,2,'0') + 
+		 "/" + padLeft(date.getDate(),2,'0') + "  " + strTime;
+}
 
+function padLeft(str,length,sign)
+{
+	str = str.toString();
+	if (str.length >= length) return str;
+	else return padLeft(sign + str, length, sign);
+}
+	
 function showMap()
 {
  $("#map").slideToggle();
@@ -189,6 +325,7 @@ function Send(){
 		database.ref('小雞婚禮問卷資訊').push().set(JSONstr);
 		
 		$("#TitleImg").prop('src','images/img04.jpg');
+		$("#box1").hide();
 		$("#box2").hide();
 		$("#box3").show();
 	}
