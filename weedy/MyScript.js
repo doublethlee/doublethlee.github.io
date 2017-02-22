@@ -325,6 +325,7 @@ function Send(){
 		database.ref('小雞婚禮問卷資訊').push().set(JSONstr);
 		
 		//$("#TitleImg").prop('src','images/img04.jpg');
+		$("#TitleImg").hide();
 		$("#box1").hide();
 		$("#box2").hide();
 		$("#box3").show();
