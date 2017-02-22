@@ -110,6 +110,12 @@ function Login(){
 					HTML +='</tr>';
 					
 					HTML +='<tr>';
+					HTML +='<td class="contact" width="25%">祝福的話：</td>';
+					HTML +='<td class="contact" width="60%">'+childSnapshot.val().Message+'</td>';
+					HTML +='<td class="contact"></td>';
+					HTML +='</tr>';
+					
+					HTML +='<tr>';
 					HTML +='<td class="contact" width="25%">填表時間：</td>';
 					HTML +='<td class="contact" width="60%">'+formatDate(new Date(childSnapshot.val().時間))+'</td>';
 					HTML +='<td class="contact"></td>';
