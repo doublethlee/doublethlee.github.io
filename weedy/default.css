@@ -213,8 +213,10 @@ hr
 #content
 {
 	position: absolute;
-	right: 10px;
-	left: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
 	width: 725px;
 	padding: 10px 10px 40px 10px;
 	background: #FFDA99;
