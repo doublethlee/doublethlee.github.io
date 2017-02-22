@@ -117,7 +117,7 @@ function Login(){
 					
 					HTML +='</table></center><br>';
 				
-				$("#result").append(HTML);
+				$("#result").prepend(HTML);
 			});
 		});
 	}
