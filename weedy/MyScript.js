@@ -1,4 +1,17 @@
-﻿function showMap()
+﻿	
+function Login(){
+	if($("#pwd").val()=='chicken8')
+	{
+		
+	}
+	else	
+	{
+		alert('密碼錯誤');
+	}
+}
+	
+
+function showMap()
 {
  $("#map").slideToggle();
  if($("#textInfo").html()=='點此看詳細資訊')
@@ -188,18 +201,7 @@ function Send(){
 	
 	
 }
-	
-function Login(){
-	if($("#pwd").val()=='chicken8'))
-	{
-		
-	}
-	else	
-	{
-		alert('密碼錯誤');
-	}
-}
-	
+
 	
 	
 	
