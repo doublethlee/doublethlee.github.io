@@ -341,6 +341,7 @@ function Send(){
 		|| parseInt($("#Q4_Text2").val()) <0
 		|| parseInt($("#Q4_Text1").val()) >30
 		|| parseInt($("#Q4_Text2").val()) >30
+		|| (parseInt($("#Q4_Text1").val()) + parseInt($("#Q4_Text2").val())) < 1
 		)
 	{
 		
