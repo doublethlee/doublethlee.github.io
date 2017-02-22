@@ -61,32 +61,18 @@ Released   : 20130902
 <link href='http://fonts.googleapis.com/css?family=Satisfy|Fjalla+One|Open+Sans:400,600,700' rel='stylesheet' type='text/css' />
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+<script src="MyScript.js"></script>
 <!--[if IE 6]>
 <link href="default_ie6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 
 </head>
 
-<script>
-function showMap()
-{
- $("#map").slideToggle();
- if($("#textInfo").html()=='點此看詳細資訊')
- {
-	$("#textInfo").html("隱藏");
- }
- else
- {
-	$("#textInfo").html("點此看詳細資訊");
- }
- 
-}
-</script>
-
 <body>
 <div id="wrapper">
 	<div id="page" class="container">
-		<div id="content"> <a href="#" class="image-style"><img src="images/img03.jpg" width="725" height="300" alt="" /></a>
+		<div id="content"> <a href="#" class="image-style"><img id='TitleImg' src="images/img03.jpg" width="725" height="300" alt="" /></a>
 			<div id="box1" class="post">
 				<h2 class="title"><a>秉宏♡思安 結婚午宴</a></h2>
 
@@ -95,38 +81,52 @@ function showMap()
 					<img src='images/map.jpg' style='-webkit-border-radius: 10px;-moz-border-radius: 10px;border-radius: 10px;'><br>
 					(三民區鼎金里金獅湖畔 內有停車場，車可直直開過橋) [<a href='http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=高雄市金獅湖保安宮' target='_blank'>點此看Google地圖</a>]<br><br>
 				</div>
-				囍時:106年7月15日  中午<br>
+				囍時:106年7月15日 (星期六) 中午<br>
 			</div>
 			<div id="box2">
+			
 				<h2 class="subtitle">問卷調查</h2>
 				<ul class="style1">
-					<li class="first">
+					<li id='Q1' class="first">
 						<h3><font color=red>❤</font>　貴姓大名</h3>
 						請填真實姓名喔！<br>
-						<input type='text' placeholder="請輸入"/>
+						<input id='Name' type='text' placeholder="請輸入"/>
+						<br><label id='err1'></label>
 					</li>
-					<li>
+					<!--
+					<li id='Li_Phone'>
+						<h3><font color=red>❤</font>　聯絡方式</h3>
+						請填手機、家電、或任何我可以聯絡上您的方法！<br>
+						<input id='Phone' type='text' placeholder="請輸入"/>
+						<br><label id='err8'></label>
+					</li>
+					-->
+					<li id='Q2'>
 						<h3><font color=red>❤</font>　您願意收到喜帖嗎</h3>
-						<label><input type="radio" name='Q1'/>當然願意。</label><br>
-						<label><input type="radio" name='Q1'/>不用了，但還是很祝福你們唷。</label>
+						<label><input id='Q1_1' onchange='ShowAddress();' type="radio" name='Q1'/>當然願意。</label><br>
+						<label><input id='Q1_2' onchange='ShowAddress();' type="radio" name='Q1'/>不用了，但還是很祝福你們唷。</label>
+						<br><label id='err2'></label>
 					</li>
-					<li>
+					<li id='Li_address' style='display:none'>
 						<h3><font color=red>❤</font>　喜帖寄送址</h3>
-						<input type='text' size='80' placeholder="請輸入"/>
+						<input id='Address' type='text' size='80' placeholder="請輸入"/>
+						<br><label id='err3'></label>
 					</li>
-					<li>
+					<li id='Q3'>
 						<h3><font color=red>❤</font>　您願意現身嗎</h3>
-						<label><input type="radio" name='Q2'/>拜託～你們結婚耶！風雨無阻阿！</label><br>
-						<label><input type="radio" name='Q2'/>很抱歉耶～無法撥空參加，不過祝福你們恩愛到永恆喔。</label><br>
+						<label><input id='Q2_1' onchange='ShowQ4();' type="radio" name='Q2'/>拜託～你們結婚耶！風雨無阻阿！</label><br>
+						<label><input id='Q2_2' onchange='ShowQ4();' type="radio" name='Q2'/>很抱歉耶～無法撥空參加，不過祝福你們恩愛到永恆喔。</label><br>
+						<br><label id='err4'></label>
 					</li>
-					<li>
+					<li id='Q4' style="display:none">
 						<h3><font color=red>❤</font>　出席人數</h3>
 						EX：１大、１大１小、２大１小...<br>
-						<input type='text' placeholder="請輸入"/>
+						<input id='Q4_Text' type='text' placeholder="請輸入"/>
+						<br><label id='err5'></label>
 					</li>
-					<li>
+					<li id='Q5'>
 						<h3><font color=red>❤</font>　需要素食餐點嗎</h3>
-						<select>
+						<select id='Q5_Select'>
 							<option>請選擇</option>
 							<option>不需要，謝謝</option>
 							<option>1份</option>
@@ -135,28 +135,38 @@ function showMap()
 							<option>4份</option>
 							<option>5份</option>
 						</select>
+						<br><label id='err6'></label>
 					</li>
-					<li>
+					<li id='Q6'>
 						<h3><font color=red>❤</font>　請問您是秉宏還是思安的關係人呢</h3>
 						我們會當成座位安排的考量喔～<br>
-						<label><input type="checkbox">男方的親戚</label><br>
-						<label><input type="checkbox">男方的朋友（含同學）</label><br>
-						<label><input type="checkbox">男方同事</label><br>
-						<label><input type="checkbox">男方的教會朋友</label><br>
-						<label><input type="checkbox">女方的親戚</label><br>
-						<label><input type="checkbox">女方的朋友（含同學）</label><br>
-						<label><input type="checkbox">女方同事</label><br>
-						<label><input type="checkbox">女方的教會朋友</label><br>
-						<label><input type="checkbox">其他：<input type='text' placeholder="請輸入"/></label>
+						<label><input id='Q6_1' type="checkbox">男方的親戚</label><br>
+						<label><input id='Q6_2' type="checkbox">男方的朋友（含同學）</label><br>
+						<label><input id='Q6_3' type="checkbox">男方同事</label><br>
+						<label><input id='Q6_4' type="checkbox">男方的教會朋友</label><br>
+						<label><input id='Q6_5' type="checkbox">女方的親戚</label><br>
+						<label><input id='Q6_6' type="checkbox">女方的朋友（含同學）</label><br>
+						<label><input id='Q6_7' type="checkbox">女方同事</label><br>
+						<label><input id='Q6_8' type="checkbox">女方的教會朋友</label><br>
+						<label><input id='Q6_9' type="checkbox" onchange="Q6_9_Chg();">其他：<input id='Otr' type='text' onchange="$('#Q6_9').prop('checked',true);" placeholder="請輸入"/></label>
+						<br><label id='err7'></label>
 					</li>
 					<li>
 						<h3><font color=red>❤</font>　留下祝福給新人</h3>
-						<textarea cols="60" rows="10"></textarea><br>
+						<textarea id='Message' cols="60" rows="10"></textarea><br>
 						
 						
 					</li>
 				</ul>
-				<center><a href="#" class="myButton">繳交問卷</a></center>
+				<center><a onclick='Send();' class="myButton">繳交問卷</a></center>
+			</div>
+			<div id="box3" style="display:none">
+				
+				<center><font size='+4'>感謝您，問卷已送出
+				<br>祝福您身心健康～<br>大吉大利，前途……</font>
+				<br>
+				<img src='images/fun.jpg'>
+				</center>
 			</div>
 			<div id="footer">
 				<p>願你倆恩恩愛愛，意篤情深，此生愛情永恆，愛心與日俱增！</p>
