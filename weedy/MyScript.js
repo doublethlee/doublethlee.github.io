@@ -60,9 +60,9 @@ function ShowData()
 				if(vNo.indexOf('份')>0)
 				{
 					vPeople += parseInt(vNo.replace('份',''));
-					$("#vpeople").html(vPeople);					
 				}
-
+				
+				$("#vpeople").html(vPeople);
 				
 				var Q3 = '';
 				
