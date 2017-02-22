@@ -1,17 +1,41 @@
-﻿	
-function Login(){
-	if($("#pwd").val()=='chicken8')
+﻿
+var vPeople=0;
+var bPeople=0;
+var sPeople=0;
+
+function CheckAll()
+{
+	for(var i=1;i<=9;i++)
+		$("#Q6_"+i).prop('checked',true);
+	
+	ShowData();
+}
+
+function CancelAll()
+{
+	for(var i=1;i<=9;i++)
+		$("#Q6_"+i).prop('checked',false);
+	
+	ShowData();
+}
+
+var DataList = [];
+var StrArr = ['的親戚','的朋友（含同學）','同事','的教會朋友']
+var No = 0;
+function ShowData()
+{
+	$("#result").html('');
+	vPeople=0;
+	bPeople=0;
+	sPeople=0;
+
+	if(No==0)
+		$("#result").html('<font color=red>還沒有人填寫問卷</font>');	
+	else
 	{
-		$("#box2").fadeOut();
-		$("#box3").show();
-		
-		firebase.database().ref('小雞婚禮問卷資訊').orderByChild('時間').on('value', function(snapshot) {
-			$("#qno").html(snapshot.numChildren());
-			
-			$("#result").html('');
-			snapshot.forEach(function(childSnapshot) {
+		DataList.forEach(function(e,i,a){
 				var HTML = "";
-				
+				var childSnapshot = DataList[i];
 				var Q1 = '不要喜帖';
 				if(childSnapshot.val().要收喜帖)
 				{
@@ -22,64 +46,63 @@ function Login(){
 				
 				if(childSnapshot.val().出席)
 				{
-					Q2 = childSnapshot.val().出席人數;
+					bPeople += parseInt(childSnapshot.val().出席人數_大);
+					sPeople += parseInt(childSnapshot.val().出席人數_小);
+					
+					Q2 = childSnapshot.val().出席人數_大+"大　"+childSnapshot.val().出席人數_小+"小";
 				}
+				
+				$("#outpeople1").html(bPeople);
+				$("#outpeople2").html(sPeople);
+				
+				var vNo = childSnapshot.val().素食;
+				
+				if(vNo.indexOf('份')>0)
+				{
+					vPeople += parseInt(vNo.replace('份',''));
+					$("#vpeople").html(vPeople);					
+				}
+
 				
 				var Q3 = '';
 				
-				if(childSnapshot.val().關係.charAt(0)=='1')
+				for(var i=1;i<=9;i++)
 				{
-					Q3 += '男方的親戚<br>';
+					if(childSnapshot.val().關係.charAt(i-1)=='1')
+					{
+						var Str = '';
+						if (i==9)
+							Str = '其他：'+childSnapshot.val().其它;
+						else if(i<=4)
+							Str+='男方';
+						else if(i<=8)
+							Str+='女方';
+						
+						if(i!=9)
+						{
+							Str+=StrArr[(i-1)%4];
+						}
+						
+						Q3 += Str + '<br>';
+					}
 				}
 				
-				if(childSnapshot.val().關係.charAt(1)=='1')
+				//過濾
+				var CheckSomeOne = false;
+				for(var i=1;i<=9;i++)
 				{
-					Q3 += '男方的朋友（含同學）<br>';
+					if($("#Q6_"+i).prop('checked'))
+					{
+						if(Q3.indexOf($("#Q6_"+i).val())>=0)
+						{
+							Q3 = Q3.replace($("#Q6_"+i).val(),'<font color=blue>'+$("#Q6_"+i).val()+'</font>');
+							CheckSomeOne = true;
+						}
+					}
 				}
 				
-				if(childSnapshot.val().關係.charAt(2)=='1')
-				{
-					Q3 += '男方的教會朋友<br>';
-				}
-				
-				if(childSnapshot.val().關係.charAt(3)=='1')
-				{
-					Q3 += '女方的親戚<br>';
-				}
-				
-				if(childSnapshot.val().關係.charAt(4)=='1')
-				{
-					Q3 += '女方的朋友（含同學）<br>';
-				}
-				
-				if(childSnapshot.val().關係.charAt(5)=='1')
-				{
-					Q3 += '男方的親戚<br>';
-				}
-				
-				if(childSnapshot.val().關係.charAt(6)=='1')
-				{
-					Q3 += '女方同事<br>';
-				}
-				
-				if(childSnapshot.val().關係.charAt(7)=='1')
-				{
-					Q3 += '女方的教會朋友<br>';
-				}
-				
-				if(childSnapshot.val().關係.charAt(8)=='1')
-				{
-					Q3 += '其他：'+childSnapshot.val().其它+'<br>';
-				}
-				
-				
-
-
-
-
-
-
-				
+				if(!CheckSomeOne)
+					return;
 				
 					HTML +='<center><table class="contacts" cellspacing="0" summary="Contacts template">';
 					HTML +='<tr>';
@@ -99,7 +122,7 @@ function Login(){
 					
 					HTML +='<tr>';
 					HTML +='<td class="contact" width="25%">素食餐點：</td>';
-					HTML +='<td class="contact" width="60%">'+childSnapshot.val().素食+'</td>';
+					HTML +='<td class="contact" width="60%">'+vNo+'</td>';
 					HTML +='<td class="contact"></td>';
 					HTML +='</tr>';
 					
@@ -124,7 +147,38 @@ function Login(){
 					HTML +='</table></center><br>';
 				
 				$("#result").prepend(HTML);
-			});
+	});
+	}
+}
+
+function Login(){
+	if($("#pwd").val()=='chicken8')
+	{
+		$("#box2").fadeOut();
+		$("#box3").show();
+		
+		firebase.database().ref('小雞婚禮問卷資訊').orderByChild('時間').on('value', function(snapshot) {
+			No = snapshot.numChildren();
+			$("#qno").html(No);
+			
+			if(No==0)
+				$("#result").html('<font color=red>還沒有人填寫問卷</font>');	
+			else
+			{
+				var ptr = 0;
+				DataList = [];
+				snapshot.forEach(function(childSnapshot) {
+					DataList.push(childSnapshot);
+					
+					ptr ++;
+					
+					if(ptr == snapshot.numChildren())
+					{
+						ShowData();
+					}
+					
+				});
+			}
 		});
 	}
 	else	
@@ -263,11 +317,34 @@ function Send(){
 		return;
 	}
 		
-	if($("#Q2_1").prop('checked') && $("#Q4_Text").val().trim().length<1)
+	if($("#Q2_1").prop('checked') && $("#Q4_Text1").val().trim().length<1 && $("#Q4_Text2").val().trim().length<1)
 	{
-		console.log(3.5);
 		
 		$("#err5").html("<font color=red>請填寫出席人數，謝謝！</font>");
+		$body.animate({
+			scrollTop:  $('#Q4').offset().top
+		}, 300);
+		return;
+	}
+	
+	if(isNaN($("#Q4_Text1").val())|| isNaN($("#Q4_Text2").val()))
+	{
+		
+		$("#err5").html("<font color=red>出席人數請填數字，謝謝！</font>");
+		$body.animate({
+			scrollTop:  $('#Q4').offset().top
+		}, 300);
+		return;
+	}
+	
+	if(parseInt($("#Q4_Text1").val()) <0
+		|| parseInt($("#Q4_Text2").val()) <0
+		|| parseInt($("#Q4_Text1").val()) >30
+		|| parseInt($("#Q4_Text2").val()) >30
+		)
+	{
+		
+		$("#err5").html("<font color=red>出席人數怪怪的，請填正常一點的，謝謝！</font>");
 		$body.animate({
 			scrollTop:  $('#Q4').offset().top
 		}, 300);
@@ -298,7 +375,6 @@ function Send(){
 			
 	}
 	
-	console.log(4);
 	
 	if(!ChooseOne)
 	{
@@ -320,7 +396,8 @@ function Send(){
 			'要收喜帖':$("#Q1_1").prop('checked'),
 			'地址':$("#Address").val(),
 			'出席':$("#Q2_1").prop('checked'),
-			'出席人數':$("#Q4_Text").val(),
+			'出席人數_大':$("#Q4_Text1").val(),
+			'出席人數_小':$("#Q4_Text2").val(),
 			'素食':$('#Q5_Select :selected').text(),
 			'關係':RelStr,
 			'其它':$("#Otr").val(),

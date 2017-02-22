@@ -80,10 +80,25 @@ Released   : 20130902
 			</center>
 			</div>
 			<div id="box3" style="display:none">
-				問卷填寫人數：<label id='qno'></label><br><br>
+				問卷填寫人數：<label id='qno'></label><br>
+				出席人數：<label id='outpeople1'></label>大　<label id='outpeople2'></label>小<br>
+				素食人數：<label id='vpeople'></label>人<br>
 				
-				
+				<br>
 				<hr>
+				顯示跟誰有關係：<br>
+				<label><input id='Q6_1' type="checkbox" onchange='ShowData();' value='男方的親戚' checked>男方的親戚</label><br>
+				<label><input id='Q6_2' type="checkbox" onchange='ShowData();' value='男方的朋友（含同學）' checked>男方的朋友（含同學）</label><br>
+				<label><input id='Q6_3' type="checkbox" onchange='ShowData();' value='男方同事' checked>男方同事</label><br>
+				<label><input id='Q6_4' type="checkbox" onchange='ShowData();' value='男方的教會朋友' checked>男方的教會朋友</label><br>
+				<label><input id='Q6_5' type="checkbox" onchange='ShowData();' value='女方的親戚' checked>女方的親戚</label><br>
+				<label><input id='Q6_6' type="checkbox" onchange='ShowData();' value='女方的朋友（含同學）' checked>女方的朋友（含同學）</label><br>
+				<label><input id='Q6_7' type="checkbox" onchange='ShowData();' value='女方同事' checked>女方同事</label><br>
+				<label><input id='Q6_8' type="checkbox" onchange='ShowData();' value='女方的教會朋友' checked>女方的教會朋友</label><br>
+				<label><input id='Q6_9' type="checkbox" onchange='ShowData();' value='其他' checked>其他</label>
+				<br>
+				<button onclick='CheckAll();'>全選</button> <button onclick='CancelAll();'>全不選</button>
+				<br><br>
 				<div id='result'>
 
 				</div>
@@ -92,22 +107,6 @@ Released   : 20130902
 				<p>願你倆恩恩愛愛，意篤情深，此生愛情永恆，愛心與日俱增！</p>
 			</div>
 		</div>
-		<!--
-		<div id="sidebar">
-			<div id="logo">
-				<h2><a>秉宏♡思安 結婚午宴</a></h2>
-			</div>
-			<div id="menu" class="box" style='display:none'>
-				<ul>
-					<li><a href="#" accesskey="1" title="">問卷調查</a></li>
-					<li><a href="#" accesskey="2" title="">交通資訊</a></li>
-					<li><a href="#" accesskey="3" title="">電子喜帖</a></li>
-					<li><a href="#" accesskey="5" title=""></a></li>
-					<li><a href="#" accesskey="4" title="">神秘入口</a></li>
-				</ul>
-			</div>
-		</div>
-		-->
 	</div>
 	<div class="clearfix">&nbsp;</div>
 </div>
