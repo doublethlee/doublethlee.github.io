@@ -5,7 +5,7 @@ function Login(){
 		$("#box2").fadeOut();
 		$("#box3").show();
 		
-		firebase.database().ref('小雞婚禮問卷資訊').on('value', function(snapshot) {
+		firebase.database().ref('小雞婚禮問卷資訊').orderByChild('時間').on('value', function(snapshot) {
 			$("#qno").html(snapshot.numChildren());
 			
 			$("#result").html('');
