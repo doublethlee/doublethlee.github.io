@@ -337,11 +337,15 @@ function Send(){
 		return;
 	}
 	
-	if(parseInt($("#Q4_Text1").val()) <0
+	if(
+	$("#Q2_1").prop('checked')
+	&&
+	(parseInt($("#Q4_Text1").val()) <0
 		|| parseInt($("#Q4_Text2").val()) <0
 		|| parseInt($("#Q4_Text1").val()) >30
 		|| parseInt($("#Q4_Text2").val()) >30
-		|| (parseInt($("#Q4_Text1").val()) + parseInt($("#Q4_Text2").val())) < 1
+		|| (parseInt($("#Q4_Text1").val()) + parseInt($("#Q4_Text2").val())) < 1)
+	
 		)
 	{
 		
