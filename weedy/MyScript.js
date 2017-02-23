@@ -261,7 +261,7 @@ function Q6_9_Chg()
 	
 function Send(){
 	
-	if($(".myButton").text()=='傳送中..')
+	if($(".myButton").text()!='繳交問卷')
 		return;
 	
 	for(var i=1;i<=8;i++)
@@ -419,11 +419,22 @@ function Send(){
 		alert("喔喔，系統壞掉了啦...快聯絡Double Lee");
 		console.log(e);
 	}
-	
-	
-	
+		
 }
 
+
+	
+$(function() {
+	firebase.database().ref('.info/connected').on('value', function(connectedSnap) {
+		if (connectedSnap.val() === true) {
+			$(".myButton").text('繳交問卷');
+		} else {
+			$(".myButton").text('無法繳交問卷，網路斷線了!');
+		}
+	});
+});
+	
+	
 	
 	
 	
