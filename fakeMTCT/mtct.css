@@ -1,0 +1,123 @@
+﻿html, body { margin: 0px; height: 100%; }
+a { color: White; text-decoration: underline; }
+a: { color: White; text-decoration: underline; }
+a:vlink { color: White; text-decoration: underline; }
+a:hover { color: White; text-decoration: none; }
+table td { text-align: center; }
+
+.messageArea { position: absolute; z-index: 9999; left: 0px; top: 0px; width: 100%; font-size: 14pt; }
+.messageArea.ok { background-color: green; color: yellow; }
+.messageArea.ng { background-color: red; color: yellow; }
+.messageArea.warn { background-color: silver; color: yellow; }
+
+.nowrap { white-space: nowrap; }
+
+.kanban-data-normal {
+	color: green;
+}
+.kanban-data-over {
+	color: red;
+}
+.kanban-data-max {
+	background: darkblue;
+}
+.kanban-data-timeout {
+	background: darkgray;
+}
+
+[kanban] {
+	width: 98%; min-width: 1280px;
+	min-height: 720px;
+	position: relative;
+	padding: 10px;
+	background-color: #6090C0;
+	font-family: Tahoma, 微軟正黑體; font-size: 16pt; font-weight: bold;
+}
+[kanban-evt-dt] {
+	position: absolute; z-index: 9;
+	width: 99%;
+	text-align: right;
+	color: white;
+	font-size: 10pt;
+}
+[kanban-content] {
+	position: relative;
+	border: 5px solid #d0d0d0;
+}
+[kanban-row] {
+	position: relative;
+	width: 99%;
+	margin: 0px auto;
+	padding-top: 5px; padding-bottom: 5px;
+}
+
+[kanban-title] [title] {
+	width: 100%;
+	text-align: center;
+	font-size: 32pt;
+	color: #eeeeee;
+	text-shadow: 5px 5px black;
+}
+[kanban-title] table {
+	width: 100%;
+	border: 0px; border-collapse: seperate; border-spacing: 0px;
+	background-color: #00506e;
+}
+[kanban-title] td {
+	padding: 0px;
+}
+
+[kanban-header] [title] {
+	font-size: 20pt;
+	color: white; background-color: blue;
+	border: 0px solid #d0d0d0;
+}
+[kanban-header] [spacer] {
+	background-color: transparent;
+	min-width: 20px;
+}
+[kanban-header] fieldset {
+	border: 3px solid #d0d0d0;
+}
+[kanban-header] table {
+	width: 100%;
+	border: 1px; border-collapse: seperate; border-spacing: 10px;
+	background-color: #008080;
+}
+[kanban-header] th {
+	background-color: white; color: black;
+	min-width: 100px;
+	border-right: 3px solid black; border-bottom: 3px solid black;
+}
+[kanban-header] td {
+	background-color: black; color: white;
+	min-width: 100px;
+}
+
+[kanban-machine] td {
+	padding: 0px 2px 0px 2px;
+}
+[kanban-machine] img {
+	width: 100px; height: 100px;
+}
+
+[kanban-detail] [spacer] {
+	background-color: white !important;
+	min-width: 10px; max-width: 10px;
+	border-top: 0px; border-bottom: 0px;
+}
+[kanban-detail] table
+{
+	width: 100%;
+	border-top: 10px solid white; border-right: 10px solid darkgray; border-bottom: 10px solid white; border-left: 10px solid darkgray;
+	border-spacing: 0px;
+	background-color: black;
+	color: white;
+}
+[kanban-detail] th {
+	color: white;
+}
+[kanban-detail] th, [kanban-detail] td {
+	border: 1px solid yellow; border-collapse: collapse; border-spacing: 0px;
+	min-width: 80px;
+}
