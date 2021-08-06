@@ -4,11 +4,17 @@ MIT
 @angular/core
 MIT
 
+@angular/forms
+MIT
+
 @angular/platform-browser
 MIT
 
 @angular/router
 MIT
+
+ng2-mqtt
+Apache-2.0
 
 rxjs
 Apache-2.0
