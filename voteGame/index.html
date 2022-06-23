@@ -209,7 +209,7 @@
             newRanking.sort(by('correctCount', by('orderAnsTime')));
 
             for (const item of newRanking) {
-                tableHTML = `
+                tableHTML += `
                 <tr><td>${index}</td><td>${item.who}</td><td>${item.correctCount}</td><td>${item.anstime.toFixed(2)}</td></tr>
                 `;
                 index++;
