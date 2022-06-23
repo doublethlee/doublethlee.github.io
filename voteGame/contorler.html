@@ -1,0 +1,156 @@
+<!--
+ * @Author: Double Lee
+ * @Date: 2022-06-21 17:11:54
+ * @LastEditions: Double Lee
+ * @LastEditTime: 2022-06-23 09:35:36
+ * @Description: file content
+-->
+<html>
+<title>線上互動區</title>
+
+<head>
+    <script>
+        var deviceId = new Date().getTime();
+    </script>
+    <script src="./lib/jquery-1.9.1.js"></script>
+    <script src="./lib/browserMqtt.js"></script>
+    <script src="./fn/mqttFn.js"></script>
+    <script src="./fn/action.js"></script>
+    <link rel="stylesheet" href="./lib/jqueryui/jquery-ui.theme.min.css" />
+    <script src="./lib/jqueryui/jquery-ui.min.js"></script>
+    <style>
+        body,
+        input,
+        button {
+            font-size: xx-large;
+        }
+    </style>
+    <script>
+        String.prototype.replaceAll = function (s1, s2) {
+            return this.replace(new RegExp(s1, "gm"), s2);
+        }
+
+        function onConnect() {
+            $("#mqttStatus").show();
+
+            // 訂閱問題
+            mqtt.subscribe('question', {
+                qos: 1
+            });
+
+            // action
+            mqtt.subscribe('action', {
+                qos: 1
+            });
+
+            mqtt.subscribe('answer', {
+                qos: 1
+            });
+        }
+
+        function onConnectionLost(response) {
+            $("#mqttStatus").hide();
+            // errMsg('Connect Lost, reconnecting');
+            setTimeout(MQTTconnect, reconnectTimeout)
+        }
+
+        function processMsg(topic, payload) {
+            if (topic == 'question') {
+
+                questShowTime = new Date().getTime();
+                const questObj = JSON.parse(payload);
+                $("#question").html(questObj.question.replaceAll('\\n', '<br>'));
+
+                for (let i = 1; i <= 4; i++) {
+                    $("#btnAns" + i).removeAttr("disabled");
+
+                    $("#txtAns" + i).html(questObj['ans' + i]);
+
+                    questObj['ans' + i] == '' ? $("#btnAns" + i).hide() : $("#btnAns" + i).show();
+
+                    $("#btnAns" + i).css('background-color', originColor);
+                }
+
+            } else if (topic == 'action') {
+                doAction(payload);
+            } else if (topic == 'answer') {
+                for (let i = 1; i <= 4; i++) {
+                    $("#btnAns" + i).attr('disabled', "true");
+
+                    if (payload == i) {
+                        $("#btnAns" + i).css('background-color', 'lightgreen');
+                    } else if (payload == -1) {
+                        $("#btnAns" + i).css('background-color', 'lightgreen');
+                    } else if (i == localStorage.myans) {
+                        $("#btnAns" + i).css('background-color', 'red');
+                    }
+
+                }
+            }
+        }
+
+        function doAction(payload) {
+            switch (payload) {
+                case 'START':
+                    $("#step2").hide();
+                    $("#step3").show();
+                    break;
+
+                case 'CLEAR':
+                    if (localStorage.userName) {
+                        localStorage.clear();
+                        location.reload();
+                    }
+                    break;
+            }
+            action = payload;
+        }
+    </script>
+</head>
+
+<body>
+    <div id="mqttStatus" style="position: absolute; right:20px; font-size:small ;color:green;display: none;">Connected
+        success!</div>
+    <div id="errMsg" style="color:red"></div>
+    <div id="step1">
+        Please enter your name: <input id="userName" type="text" /><button onclick="enterName()">OK</button>
+    </div>
+    <div id="userInfo" style="display:none">
+        <table width="100%">
+            <tr>
+                <td>
+                    Login as: <span id="showName" style="color:blue"></span>
+                </td>
+                <td>
+                    <button onclick="logout();">Logout</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="step2" style="display:none">
+        <br>
+        <img width="20%" src="./images//wait.jpeg"><br>
+        請等待出題..
+    </div>
+    <div id="step3" style="display:none">
+        <hr>
+        <div>
+            <span id="question"></span>
+        </div>
+        <div id="answers">
+            <div class="widget">
+                <fieldset>
+                    <legend>Please choose your answer</legend>
+                    <div class="controlgroup">
+                        <button id="btnAns1" onclick="ans('1')"><span id="txtAns1"></span></button><br><br>
+                        <button id="btnAns2" onclick="ans('2')"><span id="txtAns2"></span></button><br><br>
+                        <button id="btnAns3" onclick="ans('3')"><span id="txtAns3"></span></button><br><br>
+                        <button id="btnAns4" onclick="ans('4')"><span id="txtAns4"></span></button><br>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

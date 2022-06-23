@@ -1,0 +1,125 @@
+<!--
+ * @Author: Double Lee
+ * @Date: 2022-06-21 17:11:49
+ * @LastEditions: Double Lee
+ * @LastEditTime: 2022-06-23 09:56:14
+ * @Description: file content
+-->
+
+<head>
+    <script>
+        var deviceId = 'managePage';
+    </script>
+    <script src="./lib/jquery-1.9.1.js"></script>
+    <script src="./lib/browserMqtt.js"></script>
+    <script src="./fn/mqttFn.js"></script>
+    <link rel="stylesheet" href="./lib/jqueryui/jquery-ui.min.css" />
+    <script src="./lib/jqueryui/jquery-ui.min.js"></script>
+    <script>
+        let questdb = [];
+        let nowID = 0;
+
+        $(function () {
+            if (localStorage.questdb) {
+                questdb = JSON.parse(localStorage.questdb);
+            }
+
+            if (localStorage.nowID) {
+                nowID = localStorage.nowID;
+            } else {
+                nowID = 0;
+            }
+            $("#qid").val(Number(nowID) + 1);
+        });
+
+        function onConnect() {
+            $("#mqttStatus").show();
+
+            // 訂閱使用者
+            mqtt.subscribe('users/#', {
+                qos: 1
+            });
+        }
+
+        function onConnectionLost(response) {
+            $("#mqttStatus").hide();
+            // errMsg('Connect Lost, reconnecting');
+            setTimeout(MQTTconnect, reconnectTimeout)
+        }
+
+        let users = [];
+        function processMsg(topic, payload) {
+            if (topic.indexOf('users/') >= 0 && users.indexOf(payload) < 0) {
+                users.push(payload);
+            }
+        }
+
+
+        function sendQst() {
+            const questObj = {
+                id: $("#qid").val(),
+                question: $("#question").val(),
+                ans1: $("#ans1").val(),
+                ans2: $("#ans2").val(),
+                ans3: $("#ans3").val(),
+                ans4: $("#ans4").val()
+            }
+
+            questdb.push(questObj);
+
+            nowID++;
+            $("#qid").val(nowID);
+            $("#question").val('');
+            $("#ans1").val('');
+            $("#ans2").val('');
+            $("#ans3").val('');
+            $("#ans4").val('');
+
+            // localStorage.nowID = nowID;
+            // localStorage.questdb = JSON.stringify(questdb);
+            sendMQTT(`answer`, '', true);
+            sendMQTT(`question`, JSON.stringify(questObj), true);
+        }
+
+        function sendAns() {
+            sendMQTT(`answer`, $("#theAns").val(), true);
+            $("#theAns").val('');
+        }
+
+        function ACTION(cmd) {
+            sendMQTT(`action`, cmd, true);
+
+            if (cmd == 'CLEAR') {
+                sendMQTT(`answer`, '', true);
+                sendMQTT(`question`, '', true);
+
+                for(user of users) {
+                    sendMQTT(`users/${user}`, '', true);
+                    sendMQTT(`useranswer/${user}`, '', true);
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="mqttStatus" style="position: absolute; right:20px; font-size:small ;color:green;display: none;">●</div>
+    <button onclick="ACTION('START');">START</button>
+    <button onclick="ACTION('CLEAR');">CLEAR</button>
+    <br><br>
+    ID：<input id="qid" size="10" type="text" disabled><br><br>
+
+    <textarea id="question" rows="5" cols="100" type="text" multiple="true"></textarea><br>
+    <br>
+    Ans1：<input id="ans1" size="100" type="text"><br>
+    Ans2：<input id="ans2" size="100" type="text"><br>
+    Ans3：<input id="ans3" size="100" type="text"><br>
+    Ans4：<input id="ans4" size="100" type="text"><br>
+    <br><br>
+    <button onclick="sendQst();">出題</button><br>
+    <br>
+    Answer:<input id="theAns" type="text"><br><br>
+    <button onclick="sendAns();">送答案</button>
+
+
+</body>

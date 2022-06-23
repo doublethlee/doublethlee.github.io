@@ -1,0 +1,351 @@
+<!--
+ * @Author: Double Lee
+ * @Date: 2022-06-21 17:11:54
+ * @LastEditions: Double Lee
+ * @LastEditTime: 2022-06-23 10:06:18
+ * @Description: file content
+-->
+<html>
+<title>線上互動區</title>
+
+<head>
+    <script>
+        var deviceId = 'showPage';
+    </script>
+    <script src="./lib/jquery-1.9.1.js"></script>
+    <script src="./lib/browserMqtt.js"></script>
+    <script src="./fn/mqttFn.js"></script>
+    <link rel="stylesheet" href="./lib/jqueryui/jquery-ui.min.css" />
+    <script src="./lib/jqueryui/jquery-ui.min.js"></script>
+    <style>
+        body,
+        input,
+        div,
+        button {
+            font-size: xx-large;
+        }
+
+        .border-radius {
+            width: 95%;
+            height: 100px;
+            border: 15px solid orange;
+            border-radius: 25px;
+        }
+    </style>
+    <script>
+        let users = [];
+        let firstMember = true;
+        let action;
+        let userAnswer = {};
+        let Ranking = {};
+
+        String.prototype.replaceAll = function (s1, s2) {
+            return this.replace(new RegExp(s1, "gm"), s2);
+        }
+
+        $(function () {
+
+            if (localStorage.users) {
+                users = JSON.parse(localStorage.users);
+                renderUsers();
+            }
+
+            if (localStorage.ranking) {
+                Ranking = JSON.parse(localStorage.ranking);
+            }
+
+            if (!localStorage.qcount) localStorage.qcount = 0;
+        });
+
+        function renderUsers() {
+            $("#userList").html('');
+            firstMember = true;
+
+            for (user of users) {
+                showUser(user);
+            }
+        }
+
+        function processMsg(topic, payload) {
+            if (topic.indexOf('users/') >= 0 && users.indexOf(payload) < 0) {
+                users.push(payload);
+                localStorage.users = JSON.stringify(users);
+                showUser(payload);
+            } else if (topic == 'question') {
+                localStorage.qcount = parseInt(localStorage.qcount) + 1;
+                $("#qcount").html(localStorage.qcount);
+                $(`#ans1Count`).html('');
+                $(`#ans2Count`).html('');
+                $(`#ans3Count`).html('');
+                $(`#ans4Count`).html('');
+
+                renderUsers();
+                userAnswer = {};
+                $("#progressbar").progressbar({
+                    value: 0
+                });
+                $("#ansCount").html(0);
+                const questObj = JSON.parse(payload);
+                $("#questionArea").html(questObj.question.replaceAll('\\n', '<br>'));
+
+                $("#ans1").html(questObj.ans1);
+                $("#ans2").html(questObj.ans2);
+                $("#ans3").html(questObj.ans3);
+                $("#ans4").html(questObj.ans4);
+
+                questObj.ans1 == '' ? $("#ans1Area").hide() : $("#ans1Area").show();
+                questObj.ans2 == '' ? $("#ans2Area").hide() : $("#ans2Area").show();
+                questObj.ans3 == '' ? $("#ans3Area").hide() : $("#ans3Area").show();
+                questObj.ans4 == '' ? $("#ans4Area").hide() : $("#ans4Area").show();
+
+                $("#ans1Area").css('background-color', 'blanchedalmond');
+                $("#ans2Area").css('background-color', 'blanchedalmond');
+                $("#ans3Area").css('background-color', 'blanchedalmond');
+                $("#ans4Area").css('background-color', 'blanchedalmond');
+
+            } else if (topic == 'logout') {
+                users.splice(users.indexOf(payload), 1);
+                localStorage.users = JSON.stringify(users);
+                renderUsers();
+            } else if (topic == 'action') {
+                doAction(payload);
+            } else if (topic.indexOf('useranswer/') >= 0) {
+                const who = topic.split('/')[1];
+                userAnswer[who] = JSON.parse(payload);
+                const ansCount = Object.keys(userAnswer).length;
+                $("#ansCount").html(ansCount);
+                $("#progressbar").progressbar({
+                    value: (ansCount / users.length) * 100
+                });
+                $("#userList").html(
+                    $("#userList").html().replace(who, `<font color=green>${who}</font>`)
+                );
+            } else if (topic == 'answer') {
+                renderUsers();
+
+                const grp = {
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0,
+                }
+                for (const who in userAnswer) {
+                    const answer = userAnswer[who].myans;
+
+                    grp[answer]++;
+                    if (!Ranking[who]) {
+                        Ranking[who] = {
+                            correctCount: 0,
+                            anstime: userAnswer[who].anstime,
+                            orderAnsTime: userAnswer[who].anstime / 1
+                        };
+                    } else {
+                        Ranking[who].anstime += userAnswer[who].anstime;
+                        Ranking[who].orderAnsTime = Ranking[who].anstime / 1;
+                    }
+
+                    // 答對的
+                    if (answer == payload || payload == -1) {
+                        Ranking[who].correctCount++;
+                    } else {
+                        $("#userList").html(
+                            $("#userList").html().replace(who, `<font color=red>${who}</font>`)
+                        );
+                    }
+
+                    localStorage.ranking = JSON.stringify(Ranking);
+
+                    if (payload != -1) {
+                        $(`#ans${payload}Area`).css('background-color', 'lightgreen');
+                    }
+                }
+                for (const no in grp) {
+
+                    $(`#ans${no}Count`).css('font-size', 'small');
+                    $(`#ans${no}Count`).css('text-align', 'right');
+                    $(`#ans${no}Count`).html(
+                        `人數：${grp[no]} (${(Math.round(grp[no] / Object.keys(users).length)) * 100} %)`
+                    );
+                    if (payload == -1) {
+                        $(`#ans${no}Area`).css('background-color', 'lightgreen');
+                    }
+                }
+                showRanking();
+            }
+        }
+        var by = function (name, minor) {
+            return function (o, p) {
+                var a, b;
+                if (o && p && typeof o === 'object' && typeof p === 'object') {
+                    a = o[name];
+                    b = p[name];
+                    if (a === b) {
+                        return typeof minor === 'function' ? minor(o, p) : 0;
+                    }
+                    if (typeof a === typeof b) {
+                        return a < b ? -1 : 1;
+                    }
+                    return typeof a < typeof b ? -1 : 1;
+                } else {
+                    thro("error");
+                }
+            }
+        }
+
+        function showRanking() {
+            const newRanking = [];
+
+            let tableHTML = '<tr><td>--</td><td>--</td><td>--</td><td>--</td></tr>';
+            let index = 1;
+            for (const who in Ranking) {
+                newRanking.push({
+                    who: who,
+                    correctCount: Ranking[who].correctCount,
+                    anstime: Ranking[who].anstime / 1000 / 60 / 60,
+                    orderAnsTime: Ranking[who].orderAnsTime
+                });
+            }
+
+            newRanking.sort(by('correctCount', by('orderAnsTime')));
+
+            for (const item of newRanking) {
+                tableHTML = `
+                <tr><td>${index}</td><td>${item.who}</td><td>${item.correctCount}</td><td>${item.anstime.toFixed(2)}</td></tr>
+                `;
+                index++;
+            }
+
+            $("#RankingList").html(
+                `<table width='100%'>
+                    <tr><td>名次</td><td>選手</td><td>答對題數</td><td>所花時間 (分)</td></tr>
+                    ${tableHTML}
+                 </table>
+                `
+            );
+        }
+
+        function doAction(payload) {
+            switch (payload) {
+                case 'START':
+                    $("#waitZone").hide();
+                    $("#activeZone").show();
+                    break;
+
+                case 'CLEAR':
+                    if (localStorage.users || localStorage.ranking) {
+                        localStorage.clear();
+                        location.reload();
+                    }
+                    break;
+            }
+            action = payload;
+        }
+
+        function showUser(payload) {
+            const beforeList = $("#userList").html();
+            if (firstMember) {
+                firstMember = false;
+                $("#userList").html(payload);
+            } else {
+                $("#userList").html(beforeList + '、' + payload);
+            }
+        }
+
+        function onConnect() {
+            $("#mqttStatus").show();
+
+            // 訂閱使用者
+            mqtt.subscribe('users/#', {
+                qos: 1
+            });
+            // 訂閱問題
+            mqtt.subscribe('question', {
+                qos: 1
+            });
+
+            // logout
+            mqtt.subscribe('logout', {
+                qos: 1
+            });
+
+            // action
+            mqtt.subscribe('action', {
+                qos: 1
+            });
+
+            // User's Answer
+            mqtt.subscribe('useranswer/#', {
+                qos: 1
+            });
+
+            mqtt.subscribe('answer', {
+                qos: 1
+            });
+        }
+
+        function onConnectionLost(response) {
+            $("#mqttStatus").hide();
+            // errMsg('Connect Lost, reconnecting');
+            setTimeout(MQTTconnect, reconnectTimeout)
+        }
+    </script>
+</head>
+<div id="mqttStatus" style="position: absolute; right:20px; font-size:small ;color:green;display: none;">●</div>
+<table style="width:100%">
+    <tr>
+        <td width="75%">
+            <div class="widget">
+                <fieldset>
+                    <legend>參與人員：</legend>
+                    <div class="controlgroup" id="userList" style="font-size:small">
+                    </div>
+                </fieldset>
+            </div>
+            <div id="waitZone">
+                <br>
+                <img width="20%" src="./images//wait.jpeg"><br>
+                等待出題中..
+            </div>
+            <div id="activeZone" class="widget" style="display:none">
+                <fieldset>
+                    <legend>問題 <span id="qcount"></span></legend>
+                    <div id="questionArea" class="controlgroup" style="color:darkblue">
+
+                    </div>
+                    <div class="controlgroup">
+                        回答人數：<span id="ansCount"></span>
+                        <div id="progressbar">
+                        </div>
+                        <div id="ans1Area" class="border-radius">
+                            <span id="ans1"></span>
+                            <div id="ans1Count"></div>
+                        </div>
+                        <div id="ans2Area" class="border-radius">
+                            <span id="ans2"></span>
+                            <div id="ans2Count"></div>
+                        </div>
+                        <div id="ans3Area" class="border-radius">
+                            <span id="ans3"></span>
+                            <div id="ans3Count"></div>
+                        </div>
+                        <div id="ans4Area" class="border-radius">
+                            <span id="ans4"></span>
+                            <div id="ans4Count"></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </td>
+        <td style="vertical-align:top">
+            <div style="text-align:center"><img style="vertical-align:middle" width="35px" src='./images/gold.jpeg'>
+                排行榜<img style="vertical-align:middle " width="35px" src='./images/gold.jpeg'>
+            </div>
+            <hr>
+            <div id="RankingList">
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+</html>
