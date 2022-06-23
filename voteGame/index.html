@@ -124,15 +124,17 @@
                 renderUsers();
 
                 const grp = {
-                    1: 0,
-                    2: 0,
-                    3: 0,
-                    4: 0,
+                    1: {count:0, list:[]},
+                    2: {count:0, list:[]},
+                    3: {count:0, list:[]},
+                    4: {count:0, list:[]},
                 }
                 for (const who in userAnswer) {
                     const answer = userAnswer[who].myans;
 
-                    grp[answer]++;
+                    grp[answer].count++;
+                    grp[answer].list.push(who);
+
                     if (!Ranking[who]) {
                         Ranking[who] = {
                             correctCount: 0,
@@ -164,7 +166,9 @@
                     $(`#ans${no}Count`).css('font-size', 'small');
                     $(`#ans${no}Count`).css('text-align', 'right');
                     $(`#ans${no}Count`).html(
-                        `人數：${grp[no]} (${(Math.round(grp[no] / Object.keys(users).length)) * 100} %)`
+                        `人數：${grp[no].count} (${(Math.round(grp[no].count / Object.keys(users).length)) * 100} %)<br>
+                        ${grp[no].list.join(',')}
+                        `
                     );
                     if (payload == -1) {
                         $(`#ans${no}Area`).css('background-color', 'lightgreen');
