@@ -118,7 +118,7 @@
                     value: (ansCount / users.length) * 100
                 });
                 $("#userList").html(
-                    $("#userList").html().replace(who, `<font color=green>${who}</font>`)
+                    $("#userList").html().replace(plobj.who, `<font color=green>${plobj.who}</font>`)
                 );
             } else if (topic == 'answer') {
                 renderUsers();
