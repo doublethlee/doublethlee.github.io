@@ -11,6 +11,22 @@ let originColor;
 
 let questShowTime;
 
+var ua = navigator.userAgent.toLowerCase();
+function isWeiXin() {
+    if (ua.match(/MicroMessenger/i) == 'micromessenger' && ua.match(/WindowsWechat/i) != 'windowswechat' && ua.match(/WechatDevTools/i) !='wechatdevtools') {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+ 
+ 
+// if(isWeiXin()){
+if(true){
+    location.href="./openInBrowser.html";
+}
+
 $(function () {
     $("#userName").focus();
 
