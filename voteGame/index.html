@@ -147,7 +147,7 @@
                     }
 
                     // 答對的
-                    if (answer == payload || payload == -1) {
+                    if (answer == payload || (payload == -1)) {
                         Ranking[who].correctCount++;
                     } else {
                         $("#userList").html(
@@ -166,7 +166,7 @@
                     $(`#ans${no}Count`).css('font-size', 'small');
                     $(`#ans${no}Count`).css('text-align', 'right');
                     $(`#ans${no}Count`).html(
-                        `人數：${grp[no].count} (${(Math.round(grp[no].count / Object.keys(users).length)) * 100} %)<br>
+                        `人數：${grp[no].count} (${((grp[no].count / Object.keys(users).length) * 100).toFixed(0)} %)<br>
                         ${grp[no].list.join(',')}
                         `
                     );
