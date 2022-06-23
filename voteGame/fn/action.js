@@ -22,9 +22,8 @@ function isWeiXin() {
 }
  
  
-// if(isWeiXin()){
-if(true){
-    location.href="./openInBrowser.html";
+if(isWeiXin()){
+    // location.href="./openInBrowser.html";
 }
 
 $(function () {
