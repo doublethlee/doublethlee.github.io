@@ -2,7 +2,7 @@
  * @Author: Double Lee
  * @Date: 2022-06-21 17:11:54
  * @LastEditions: Double Lee
- * @LastEditTime: 2022-06-23 10:06:18
+ * @LastEditTime: 2022-06-23 10:40:54
  * @Description: file content
 -->
 <html>
@@ -110,8 +110,8 @@
             } else if (topic == 'action') {
                 doAction(payload);
             } else if (topic.indexOf('useranswer/') >= 0) {
-                const who = topic.split('/')[1];
-                userAnswer[who] = JSON.parse(payload);
+                const plobj = JSON.parse(payload);
+                userAnswer[plobj.who] = plobj;
                 const ansCount = Object.keys(userAnswer).length;
                 $("#ansCount").html(ansCount);
                 $("#progressbar").progressbar({

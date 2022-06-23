@@ -2,7 +2,7 @@
  * @Author: Double Lee
  * @Date: 2022-06-21 17:11:49
  * @LastEditions: Double Lee
- * @LastEditTime: 2022-06-23 10:33:28
+ * @LastEditTime: 2022-06-23 10:38:22
  * @Description: file content
 -->
 
@@ -94,8 +94,8 @@
                 sendMQTT(`question`, '', true);
 
                 for(user of users) {
-                    sendMQTT(`users/${user.toLowerCase()}`, '', true);
-                    sendMQTT(`useranswer/${user.toLowerCase()}`, '', true);
+                    sendMQTT(`users/${user}`, '', true);
+                    sendMQTT(`useranswer/${user}`, '', true);
                 }
             }
         }

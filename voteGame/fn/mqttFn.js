@@ -2,7 +2,7 @@
  * @Author: Double Lee
  * @Date: 2022-06-21 17:17:08
  * @LastEditions: Double Lee
- * @LastEditTime: 2022-06-22 14:42:15
+ * @LastEditTime: 2022-06-23 10:38:00
  * @Description: file content
  */
 var host = '//2uz2f0.cn1.mqtt.chat' // 环信MQTT服务器地址 通过console后台[MQTT]->[服务概览]->[服务配置]下[连接地址]获取
@@ -136,7 +136,7 @@ function onMessageArrived(message) {
 
 function sendMQTT(topic, message, retain) {
     const mqttmsg = new Paho.MQTT.Message(message) //set body
-    mqttmsg.destinationName = topic // set topic
+    mqttmsg.destinationName = topic.toLowerCase() // set topic
     mqttmsg.retained = retain;
     mqtt.send(mqttmsg)
 }

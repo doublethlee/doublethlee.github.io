@@ -2,7 +2,7 @@
  * @Author: Double Lee
  * @Date: 2022-06-22 09:18:48
  * @LastEditions: Double Lee
- * @LastEditTime: 2022-06-23 09:35:09
+ * @LastEditTime: 2022-06-23 10:39:26
  * @Description: file content
  */
 let userName;
@@ -111,7 +111,8 @@ function ans(ansno) {
     JSON.stringify(
         {
             myans: ansno,
-            anstime: new Date().getTime() - questShowTime
+            anstime: new Date().getTime() - questShowTime,
+            who: userName
         }
     )
     , true);
