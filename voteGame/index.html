@@ -35,7 +35,6 @@
     <script>
         let users = [];
         let firstMember = true;
-        let action;
         let userAnswer = {};
         let Ranking = {};
 
@@ -266,13 +265,10 @@
                     break;
 
                 case 'CLEAR':
-                    if (localStorage.users || localStorage.ranking) {
                         localStorage.clear();
                         location.reload();
-                    }
                     break;
             }
-            action = payload;
         }
 
         function showUser(payload) {
