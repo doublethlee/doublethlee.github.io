@@ -55,7 +55,7 @@ $(function () {
 });
 
 function enterName() {
-    if($("mqttStatus").is(':hidden')) {
+    if(!mqtt.isConnected()) {
         errMsg('Connecting failed..');
         return;
     }
@@ -112,18 +112,29 @@ function errMsg(Msg) {
 }
 
 function logout() {
-    sendMQTT('logout', userName, false);
-    sendMQTT(`users/${userName}`, '', true);
+
+    if(!mqtt.isConnected()) {
+        errMsg('Connecting failed..');
+        return;
+    }
+
     localStorage.removeItem('userName');
     $("#userName").val('');
     $("#step1").show();
     $("#step2").hide();
     $("#step3").hide();
     $("#userInfo").hide();
+    sendMQTT('logout', userName, false);
+    sendMQTT(`users/${userName}`, '', true);
 }
 
 function ans(ansno) {
 
+    if(!mqtt.isConnected()) {
+        errMsg('Connecting failed..');
+        return;
+    }
+    
     $("#btnAns1").css('background-color',originColor);
     $("#btnAns2").css('background-color',originColor);
     $("#btnAns3").css('background-color',originColor);
