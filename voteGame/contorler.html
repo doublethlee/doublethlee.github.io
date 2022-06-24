@@ -97,10 +97,8 @@
                     break;
 
                 case 'CLEAR':
-                    if (localStorage.userName) {
                         localStorage.clear();
                         location.reload();
-                    }
                     break;
             }
             action = payload;
