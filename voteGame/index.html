@@ -71,6 +71,7 @@
         }
 
         function processMsg(topic, payload) {
+            if(payload=="") return;
             if (topic.indexOf('users/') >= 0 && users.indexOf(payload) < 0) {
                 users.push(payload);
                 localStorage.users = JSON.stringify(users);
