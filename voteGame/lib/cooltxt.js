@@ -3,7 +3,7 @@ var ctx = c.getContext("2d");
 var mask;
 
 var pointCount = 500;
-var str = "空無一人. . .";
+var str = "沒有人. . .";
 var fontStr = "bold 128pt Helvetica Neue, Helvetica, Arial, sans-serif";
 
 ctx.font = fontStr;
