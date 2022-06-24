@@ -190,6 +190,16 @@
                         $(`#ans${payload}Area`).css('background-color', 'lightgreen');
                     }
                 }
+                
+                if(Object.keys(userAnswer).length <1 && payload != -1) {
+                    $(`#ans${payload}Area`).css('background-color', 'lightgreen');
+                } else if (Object.keys(userAnswer).length <1 && payload == -1) {
+                    $(`#ans1Area`).css('background-color', 'lightgreen');
+                    $(`#ans2Area`).css('background-color', 'lightgreen');
+                    $(`#ans3Area`).css('background-color', 'lightgreen');
+                    $(`#ans4Area`).css('background-color', 'lightgreen');
+                }
+
                 for (const no in grp) {
 
                     $(`#ans${no}Count`).css('font-size', 'small');
@@ -200,7 +210,8 @@
                         `
                     );
                     if (payload == -1) {
-                        $(`#ans${no}Area`).css('background-color', 'lightgreen');
+                        // $(`#ans${no}Area`).css('background-color', 'lightgreen');
+                        $(`#ans${no}Area`).animate({backgroundColor: "lightgreen",}, 1000 );
                     }
                 }
                 showRanking();
@@ -226,6 +237,7 @@
         }
 
         function showRanking() {
+
             const newRanking = [];
 
             let tableHTML = '<tr><td>--</td><td>--</td><td>--</td><td>--</td></tr>';
@@ -255,6 +267,8 @@
                  </table>
                 `
             );
+
+            $( "#RankingList" ).effect( 'bounce', null, 800);
         }
 
         function doAction(payload) {
@@ -379,7 +393,7 @@
             <center><img src='./images/qrcode.jpeg' width="25%"></center>
             <hr>
             <div style="text-align:center"><img style="vertical-align:middle" width="35px" src='./images/gold.jpeg'>
-                排行榜<img style="vertical-align:middle " width="35px" src='./images/gold.jpeg'>
+                <b>排行榜</b><img style="vertical-align:middle " width="35px" src='./images/gold.jpeg'>
             </div>
             <hr>            
             <div id="RankingList">
