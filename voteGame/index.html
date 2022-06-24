@@ -10,7 +10,7 @@
 
 <head>
     <script>
-        var deviceId = 'showPage';
+        var deviceId = 'showPage' + new Date().getTime();
     </script>
     <script src="./lib/jquery-1.9.1.js"></script>
     <script src="./lib/browserMqtt.js"></script>
@@ -213,8 +213,7 @@
                         `
                     );
                     if (payload == -1) {
-                        // $(`#ans${no}Area`).css('background-color', 'lightgreen');
-                        $(`#ans${no}Area`).animate({backgroundColor: "lightgreen",}, 1000 );
+                        $(`#ans${no}Area`).css('background-color', 'lightgreen');
                     }
                 }
                 showRanking();
