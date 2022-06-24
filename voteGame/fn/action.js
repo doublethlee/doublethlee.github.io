@@ -55,7 +55,7 @@ $(function () {
 });
 
 function enterName() {
-    if(!mqtt.isConnected() || !mqtt) {
+    if(!mqtt || !mqtt.isConnected()) {
         errMsg('Connecting failed..');
         return;
     }
@@ -113,7 +113,7 @@ function errMsg(Msg) {
 
 function logout() {
 
-    if(!mqtt.isConnected() || !mqtt) {
+    if(!mqtt || !mqtt.isConnected()) {
         errMsg('Connecting failed..');
         return;
     }
@@ -130,7 +130,7 @@ function logout() {
 
 function ans(ansno) {
 
-    if(!mqtt.isConnected() || !mqtt) {
+    if(!mqtt || !mqtt.isConnected()) {
         errMsg('Connecting failed..');
         return;
     }
