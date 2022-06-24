@@ -119,9 +119,34 @@
                 userAnswer[plobj.who] = plobj;
                 const ansCount = Object.keys(userAnswer).length;
                 $("#ansCount").html(ansCount);
+                const pval = (ansCount / users.length) * 100;
                 $("#progressbar").progressbar({
-                    value: (ansCount / users.length) * 100
+                    value: pval
                 });
+
+                const progressbarValue
+                      = $("#progressbar").find(".ui-progressbar-value");
+                
+                let color;
+
+                if(pval <30) {
+                    color = '#CD5941';
+                } else if (pval < 70) {
+                    color = '#E6E028';
+                } else {
+                    color = '#B7FC2B';
+                }
+                
+                progressbarValue.css({
+                    "background": color,
+                });
+
+                if(pval >= 100) {
+                    $("#progressbar").progressbar({
+                        value: false
+                    });
+                }
+
                 $("#userList").html(
                     $("#userList").html().replace(plobj.who, `<font color=green>${plobj.who}</font>`)
                 );
@@ -323,8 +348,16 @@
 
                     </div>
                     <div class="controlgroup">
-                        回答人數：<span id="ansCount"></span>
-                        <div id="progressbar">
+                        <table width="100%">
+                            <tr>
+                                <td width="15%" style="font-size:large">
+                                    回答人數：<span id="ansCount"></span>
+                                </td>
+                                <td>
+                                    <div id="progressbar" style='height:20px'>
+                                </td>
+                            </tr>
+                        </table>
                         </div>
                         <div id="ans1Area" class="border-radius">
                             <span id="ans1"></span>

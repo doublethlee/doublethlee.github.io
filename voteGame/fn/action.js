@@ -54,6 +54,11 @@ $(function () {
 });
 
 function enterName() {
+    if($("mqttStatus").is(':hidden')) {
+        errMsg('Connecting failed..');
+        return;
+    }
+
     if ($("#userName").val().length < 1 ) {
         errMsg('Please fill your name~~');
         $("#userName").focus();
@@ -71,7 +76,7 @@ function enterName() {
     localStorage['userName'] = userName;
     renderMainPage();
 
-    sendMQTT(`users/${username}`, userName, true);
+    sendMQTT(`users/${userName}`, userName, true);
 }
 
 function isSpecialChar(str) {

@@ -87,9 +87,9 @@
         }
 
         function ACTION(cmd) {
-            sendMQTT(`action`, cmd, true);
-
+            
             if (cmd == 'CLEAR') {
+                sendMQTT(`action`, cmd, true);
                 sendMQTT(`answer`, '', true);
                 sendMQTT(`question`, '', true);
 
@@ -97,6 +97,7 @@
                     sendMQTT(`users/${user}`, '', true);
                     sendMQTT(`useranswer/${user}`, '', true);
                 }
+                sendMQTT(`action`, '', true);
             }
         }
     </script>
