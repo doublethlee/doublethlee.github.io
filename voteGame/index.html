@@ -54,7 +54,11 @@
                 Ranking = JSON.parse(localStorage.ranking);
             }
 
-            if (!localStorage.qcount) localStorage.qcount = 0;
+            if(!localStorage.qcount) {
+                localStorage.qcount = 0;
+            } else {
+                localStorage.qcount = localStorage.qcount -1;
+            }
         });
 
         function renderUsers() {
