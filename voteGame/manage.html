@@ -87,9 +87,9 @@
         }
 
         function ACTION(cmd) {
-            
+            sendMQTT(`action`, cmd, true);
+
             if (cmd == 'CLEAR') {
-                sendMQTT(`action`, cmd, true);
                 sendMQTT(`answer`, '', true);
                 sendMQTT(`question`, '', true);
 
