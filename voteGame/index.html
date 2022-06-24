@@ -57,6 +57,9 @@
                 localStorage.qcount = 0;
             } else {
                 localStorage.qcount = localStorage.qcount -1;
+                if(localStorage.qcount == -1) {
+                    localStorage.qcount = 0;
+                }
             }
         });
 
