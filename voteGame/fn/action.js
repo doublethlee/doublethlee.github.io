@@ -27,6 +27,7 @@ if(isWeiXin()){
 }
 
 $(function () {
+    $("#mqttStatus").hide();
     $("#userName").focus();
 
     if (localStorage['userName']) {
