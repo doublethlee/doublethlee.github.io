@@ -1,0 +1,97 @@
+<!--
+ * @Author: Double Lee
+ * @Date: 2026-05-28 08:45:38
+ * @LastEditions: Double Lee
+ * @LastEditTime:: Do not edit
+ * @Description: *:;,｡･★Happy(◎≧v≦)人(≧v≦●)Coding☆･:.,;*
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fashion Shop Demo</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <h1>Fashion Shop</h1>
+      <p>簡單服飾購物網站 Demo</p>
+    </div>
+
+    <button class="cart-button" onclick="toggleCart()">
+      🛒 購物車 <span id="cart-count">0</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h2>春夏新品上架</h2>
+        <p>精選上衣、外套、褲款與配件，打造你的日常穿搭。</p>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <button onclick="filterProducts('全部')">全部</button>
+      <button onclick="filterProducts('上衣')">上衣</button>
+      <button onclick="filterProducts('外套')">外套</button>
+      <button onclick="filterProducts('褲子')">褲子</button>
+      <button onclick="filterProducts('配件')">配件</button>
+    </section>
+
+    <section id="product-list" class="product-grid">
+      載入商品中...
+    </section>
+  </main>
+
+  <aside id="cart-panel" class="cart-panel hidden">
+    <div class="cart-header">
+      <h2>購物車</h2>
+      <button onclick="toggleCart()">✕</button>
+    </div>
+
+    <div id="cart-items"></div>
+
+    <div class="cart-summary">
+      <strong>總金額：</strong>
+      <span id="cart-total">NT$ 0</span>
+    </div>
+
+    <form id="order-form" class="order-form">
+      <h3>訂購資料</h3>
+
+      <label>
+        姓名 *
+        <input type="text" id="customer-name" required />
+      </label>
+
+      <label>
+        電話 *
+        <input type="tel" id="customer-phone" required />
+      </label>
+
+      <label>
+        Email
+        <input type="email" id="customer-email" />
+      </label>
+
+      <label>
+        地址
+        <textarea id="customer-address"></textarea>
+      </label>
+
+      <button type="submit" class="checkout-button">
+        送出訂單
+      </button>
+    </form>
+
+    <p id="order-message"></p>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
