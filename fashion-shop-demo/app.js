@@ -26,6 +26,16 @@ async function loadProducts() {
     filteredProducts = products;
     renderProducts();
 
+    trackEvent('view_item_list', {
+      item_list_name: 'Fashion Shop Demo',
+      items: products.map(product => ({
+        item_id: product.id,
+        item_name: product.name,
+        item_category: product.category,
+        price: product.price
+      }))
+    });
+
   } catch (err) {
     productList.innerHTML = `
       <div class="error">
@@ -91,6 +101,21 @@ function addToCart(productId) {
     });
   }
 
+    trackEvent('add_to_cart', {
+    currency: 'TWD',
+    value: product.price,
+    items: [
+      {
+        item_id: product.id,
+        item_name: product.name,
+        item_category: product.category,
+        price: product.price,
+        quantity: 1
+      }
+    ]
+  });
+
+  
   renderCart();
 }
 
@@ -163,6 +188,22 @@ function calculateTotal() {
 function toggleCart() {
   const panel = document.getElementById('cart-panel');
   panel.classList.toggle('hidden');
+
+  const isOpened = !panel.classList.contains('hidden');
+
+  if (isOpened) {
+    trackEvent('view_cart', {
+      currency: 'TWD',
+      value: calculateTotal(),
+      items: cart.map(item => ({
+        item_id: item.id,
+        item_name: item.name,
+        item_category: item.category || '',
+        price: item.price,
+        quantity: item.quantity
+      }))
+    });
+  }
 }
 
 async function submitOrder(event) {
@@ -196,6 +237,18 @@ async function submitOrder(event) {
 
   message.textContent = '訂單送出中...';
 
+  trackEvent('begin_checkout', {
+  currency: 'TWD',
+  value: calculateTotal(),
+  items: cart.map(item => ({
+    item_id: item.id,
+    item_name: item.name,
+    item_category: item.category || '',
+    price: item.price,
+    quantity: item.quantity
+  }))
+});
+
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -210,6 +263,20 @@ async function submitOrder(event) {
 
     message.textContent = `訂單建立成功！訂單編號：${data.orderId}`;
 
+    trackEvent('purchase', {
+      transaction_id: data.orderId,
+      currency: 'TWD',
+      value: calculateTotal(),
+      items: cart.map(item => ({
+        item_id: item.id,
+        item_name: item.name,
+        item_category: item.category || '',
+        price: item.price,
+        quantity: item.quantity
+      }))
+    });
+
+    
     cart = [];
     renderCart();
 
@@ -218,4 +285,13 @@ async function submitOrder(event) {
   } catch (err) {
     message.textContent = `訂單送出失敗：${err.message}`;
   }
+}
+
+function trackEvent(eventName, params = {}) {
+  if (typeof gtag !== 'function') {
+    console.warn('GA4 gtag is not loaded:', eventName, params);
+    return;
+  }
+
+  gtag('event', eventName, params);
 }
